@@ -76,13 +76,15 @@ $(foreach lib,$(libs),\
 # DRI
 dri_libs := libgallium_dri
 drv_libs := libgallium_drv_video
-ifeq ($(TARGET_ARCH),$(filter $(TARGET_ARCH),x86 x86_64))
+ifneq (,$(filter $(TARGET_ARCH),x86 x86_64))
+ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
 $(eval $(call define-redroid-prebuilt-lib,libigdgmm,,libigdgmm.so))
 drv_libs_intel := i965_drv_video iHD_drv_video
 $(foreach lib,$(drv_libs_intel),\
     $(eval $(call define-redroid-prebuilt-lib,$(lib),,dri/$(lib).so,dri,,libigdgmm)))
 
 drv_libs += $(drv_libs_intel)
+endif
 endif
 dri_links := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/dri && find * -name '*_dri.so' -type l)
 drv_links := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/dri && find * -name '*_drv_video.so' -type l)
@@ -105,9 +107,11 @@ $(foreach lib,$(libs),\
 
 
 ## VA
+ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
 va_libs := libva.so.2 libva-drm.so.2
 $(foreach lib,$(va_libs),\
     $(eval $(call define-redroid-prebuilt-lib,$(lib),$(lib),,,,$(drv_libs) $(drm_libs))))
+endif
 
 
 ## LLVM
@@ -181,9 +185,11 @@ include $$(BUILD_PREBUILT)
 endef
 
 # vaapi
+ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
 bins:=avcenc h264encode hevcencode jpegenc vp8enc vp9enc vainfo
 $(foreach i,$(bins),\
     $(eval $(call define-redroid-prebuilt-bin,$(i),$(va_libs))))
+endif
 
 $(eval $(call define-redroid-prebuilt-bin,uinputd,$(evdev_libs),uinputd/uinputd.rc))
 
