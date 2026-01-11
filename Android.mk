@@ -74,44 +74,44 @@ $(foreach lib,$(libs),\
 
 
 # DRI
-dri_libs := libgallium_dri
-drv_libs := libgallium_drv_video
-ifneq (,$(filter $(TARGET_ARCH),x86 x86_64))
-ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
-$(eval $(call define-redroid-prebuilt-lib,libigdgmm,,libigdgmm.so))
-drv_libs_intel := i965_drv_video iHD_drv_video
-$(foreach lib,$(drv_libs_intel),\
-    $(eval $(call define-redroid-prebuilt-lib,$(lib),,dri/$(lib).so,dri,,libigdgmm)))
-
-drv_libs += $(drv_libs_intel)
-endif
-endif
-dri_links := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/dri && find * -name '*_dri.so' -type l)
-drv_links := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/dri && find * -name '*_drv_video.so' -type l)
-$(eval $(call define-redroid-prebuilt-lib,libgallium_dri,,dri/libgallium_dri.so,dri,$(dri_links)))
-$(eval $(call define-redroid-prebuilt-lib,libgallium_drv_video,,dri/libgallium_drv_video.so,dri,$(drv_links)))
+# dri_libs := libgallium_dri
+# drv_libs := libgallium_drv_video
+# ifneq (,$(filter $(TARGET_ARCH),x86 x86_64))
+# ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
+# $(eval $(call define-redroid-prebuilt-lib,libigdgmm,,libigdgmm.so))
+# drv_libs_intel := i965_drv_video iHD_drv_video
+# $(foreach lib,$(drv_libs_intel),\
+#     $(eval $(call define-redroid-prebuilt-lib,$(lib),,dri/$(lib).so,dri,,libigdgmm)))
+#
+# drv_libs += $(drv_libs_intel)
+# endif
+# endif
+# dri_links := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/dri && find * -name '*_dri.so' -type l)
+# drv_links := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/dri && find * -name '*_drv_video.so' -type l)
+# $(eval $(call define-redroid-prebuilt-lib,libgallium_dri,,dri/libgallium_dri.so,dri,$(dri_links)))
+# $(eval $(call define-redroid-prebuilt-lib,libgallium_drv_video,,dri/libgallium_drv_video.so,dri,$(drv_links)))
 
 
 ## amdgpu.ids
-$(eval $(call define-redroid-prebuilt-etc,amdgpu.ids.redroid,,libdrm/amdgpu.ids,hwdata))
+# $(eval $(call define-redroid-prebuilt-etc,amdgpu.ids.redroid,,libdrm/amdgpu.ids,hwdata))
 
 
 # libs with SOVERSION
-gbm_libs := libgbm.so.1
-glapi_libs := libglapi.so.0
-libs = $(gbm_libs) $(glapi_libs)
-drm_libs := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib && find * -name 'libdrm*.so.*' -type l)
-libs += $(drm_libs)
-$(foreach lib,$(libs),\
-    $(eval $(call define-redroid-prebuilt-lib,$(lib),$(lib))))
+# gbm_libs := libgbm.so.1
+# glapi_libs := libglapi.so.0
+# libs = $(gbm_libs) $(glapi_libs)
+# drm_libs := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib && find * -name 'libdrm*.so.*' -type l)
+# libs += $(drm_libs)
+# $(foreach lib,$(libs),\
+#     $(eval $(call define-redroid-prebuilt-lib,$(lib),$(lib))))
 
 
 ## VA
-ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
-va_libs := libva.so.2 libva-drm.so.2
-$(foreach lib,$(va_libs),\
-    $(eval $(call define-redroid-prebuilt-lib,$(lib),$(lib),,,,$(drv_libs) $(drm_libs))))
-endif
+# ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
+# va_libs := libva.so.2 libva-drm.so.2
+# $(foreach lib,$(va_libs),\
+#     $(eval $(call define-redroid-prebuilt-lib,$(lib),$(lib),,,,$(drv_libs) $(drm_libs))))
+# endif
 
 
 ## LLVM
@@ -122,24 +122,24 @@ $(foreach lib,$(llvm_libs),\
 
 
 # GLES
-libs := libEGL_mesa libGLESv1_CM_mesa libGLESv2_mesa
-$(foreach lib,$(libs),\
-    $(eval $(call define-redroid-prebuilt-lib,$(lib),,egl/$(lib).so,egl,,\
-		$(dri_libs) $(glapi_libs) $(drm_libs))))
+# libs := libEGL_mesa libGLESv1_CM_mesa libGLESv2_mesa
+# $(foreach lib,$(libs),\
+#     $(eval $(call define-redroid-prebuilt-lib,$(lib),,egl/$(lib).so,egl,,\
+# 		$(dri_libs) $(glapi_libs) $(drm_libs))))
 
 
 # Vulkan
-vulkan_libs := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/hw && find * -name 'libvulkan_*.so' -type f)
-$(foreach lib,$(vulkan_libs),\
-	$(eval $(call define-redroid-prebuilt-lib,$(lib:libvulkan_%.so=vulkan.%),,hw/$(lib),hw,,$(ndk_libs_cxx:%=%_p))))
+# vulkan_libs := $(shell cd $(LOCAL_PATH)/prebuilts/$(TARGET_ARCH)/lib/hw && find * -name 'libvulkan_*.so' -type f)
+# $(foreach lib,$(vulkan_libs),\
+# 	$(eval $(call define-redroid-prebuilt-lib,$(lib:libvulkan_%.so=vulkan.%),,hw/$(lib),hw,,$(ndk_libs_cxx:%=%_p))))
 
 
 # minigbm gralloc
-$(eval $(call define-redroid-prebuilt-lib,gralloc.cros,,hw/gralloc.cros.so,hw))
+# $(eval $(call define-redroid-prebuilt-lib,gralloc.cros,,hw/gralloc.cros.so,hw))
 
 
 # gbm gralloc
-$(eval $(call define-redroid-prebuilt-lib,gralloc.gbm,,hw/gralloc.gbm.so,hw,,$(gbm_libs)))
+# $(eval $(call define-redroid-prebuilt-lib,gralloc.gbm,,hw/gralloc.gbm.so,hw,,$(gbm_libs)))
 
 
 # redroid audio
@@ -147,7 +147,7 @@ $(eval $(call define-redroid-prebuilt-lib,audio.primary.redroid,,hw/audio.primar
 
 
 # redroid hwcomposer
-$(eval $(call define-redroid-prebuilt-lib,hwcomposer.redroid,,hw/hwcomposer.redroid.so,hw))
+$(eval $(call define-redroid-prebuilt-lib,hwcomposer.redroid,,hw/hwcomposer.redroid.so,hw,$(llvm_libs)))
 
 
 ## libOmxCore
@@ -185,11 +185,11 @@ include $$(BUILD_PREBUILT)
 endef
 
 # vaapi
-ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
-bins:=avcenc h264encode hevcencode jpegenc vp8enc vp9enc vainfo
-$(foreach i,$(bins),\
-    $(eval $(call define-redroid-prebuilt-bin,$(i),$(va_libs))))
-endif
+# ifeq (,$(filter $(PLATFORM_VERSION), 15 16))
+# bins:=avcenc h264encode hevcencode jpegenc vp8enc vp9enc vainfo
+# $(foreach i,$(bins),\
+#     $(eval $(call define-redroid-prebuilt-bin,$(i),$(va_libs))))
+# endif
 
 $(eval $(call define-redroid-prebuilt-bin,uinputd,$(evdev_libs),uinputd/uinputd.rc))
 
